@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RSVP Admin · M &amp; C</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Hanken+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Hanken Grotesk', system-ui, sans-serif; background: #f0ede6; color: #33402d; min-height: 100vh; }
+
+    /* LOGIN */
+    #login { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(160deg, #b3bfa1, #869678); }
+    .login-card { background: linear-gradient(175deg, #fbf7ee, #f1ead9); border-radius: 12px; box-shadow: 0 24px 48px rgba(40,52,34,.3); padding: 44px 36px; text-align: center; width: 320px; }
+    .login-card h1 { font-family: 'EB Garamond', serif; font-weight: 400; font-size: 30px; color: #33402d; margin-bottom: 4px; }
+    .login-card .sub { font-size: 10px; letter-spacing: .32em; text-transform: uppercase; color: #6f7064; margin-bottom: 30px; }
+    .login-card input { width: 100%; border: 1.5px solid #c6a14e; border-radius: 40px; padding: 13px 20px; background: rgba(255,255,255,.5); font-family: 'Hanken Grotesk', sans-serif; font-size: 15px; color: #33402d; outline: none; text-align: center; margin-bottom: 12px; }
+    .login-card button { width: 100%; border: none; border-radius: 40px; padding: 14px; background: linear-gradient(180deg, #d3b46b, #b89243); color: #fffdf6; font-family: 'EB Garamond', serif; font-style: italic; font-size: 17px; cursor: pointer; box-shadow: 0 6px 16px rgba(120,90,30,.3); }
+    .login-err { margin-top: 12px; font-size: 12px; color: #b03030; }
+
+    /* APP */
+    #app { display: none; }
+    header { background: linear-gradient(135deg, #45463d, #33402d); padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 12px rgba(0,0,0,.2); }
+    header h1 { font-family: 'EB Garamond', serif; font-weight: 400; font-size: 22px; color: #e8d089; }
+    header .sub { font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: rgba(255,255,255,.4); margin-top: 2px; }
+    .refresh-btn { border: 1px solid rgba(198,161,78,.4); background: transparent; color: #c6a14e; border-radius: 8px; padding: 8px 16px; font-family: 'Hanken Grotesk', sans-serif; font-size: 12px; cursor: pointer; letter-spacing: .06em; transition: background .2s; }
+    .refresh-btn:hover { background: rgba(198,161,78,.12); }
+
+    main { max-width: 1120px; margin: 0 auto; padding: 28px 20px 60px; }
+
+    /* STATS */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 26px; }
+    .stat-card { background: linear-gradient(175deg, #fbf7ee, #f1ead9); border-radius: 10px; box-shadow: 0 4px 16px rgba(40,52,34,.1); padding: 18px 16px; text-align: center; }
+    .stat-card .num { font-family: 'EB Garamond', serif; font-size: 38px; color: #c6a14e; line-height: 1; }
+    .stat-card .label { font-size: 9px; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; color: #6f7064; margin-top: 6px; }
+
+    /* CONTROLS */
+    .controls { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+    .filter-tabs { display: flex; background: #e6dece; border-radius: 40px; padding: 3px; gap: 2px; }
+    .filter-tab { border: none; border-radius: 40px; padding: 7px 16px; font-family: 'Hanken Grotesk', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; background: transparent; color: #6f7064; transition: all .18s; }
+    .filter-tab.active { background: #fff; color: #33402d; box-shadow: 0 2px 6px rgba(40,52,34,.12); }
+    .search-input { flex: 1; min-width: 180px; border: 1.5px solid #d6c8a6; border-radius: 40px; padding: 9px 18px; font-family: 'Hanken Grotesk', sans-serif; font-size: 13px; color: #33402d; outline: none; background: #fff; }
+    .sort-select { border: 1.5px solid #d6c8a6; border-radius: 40px; padding: 9px 16px; font-family: 'Hanken Grotesk', sans-serif; font-size: 12px; color: #33402d; outline: none; background: #fff; cursor: pointer; }
+
+    /* TABLE */
+    .table-wrap { background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(40,52,34,.1); overflow: hidden; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 640px; }
+    th { background: #33402d; color: rgba(255,255,255,.65); font-size: 9px; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; padding: 13px 14px; text-align: left; white-space: nowrap; }
+    td { padding: 12px 14px; border-bottom: 1px solid #f0ede6; font-size: 13px; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #faf8f3; }
+
+    .badge { display: inline-block; border-radius: 40px; padding: 3px 10px; font-size: 10px; font-weight: 600; letter-spacing: .04em; white-space: nowrap; }
+    .badge-accepted { background: #d4edda; color: #2d6a4f; }
+    .badge-declined { background: #fde8e8; color: #8b2635; }
+
+    .table-input { width: 64px; border: 1.5px solid #d6c8a6; border-radius: 8px; padding: 6px 8px; font-family: 'Hanken Grotesk', sans-serif; font-size: 13px; color: #33402d; outline: none; text-align: center; background: #faf8f3; transition: border-color .18s; }
+    .table-input:focus { border-color: #c6a14e; background: #fff; }
+    .table-input.saved { border-color: #2d6a4f; background: #f0faf4; }
+
+    .muted { color: #bbb; font-style: italic; font-size: 12px; }
+    .no-data { padding: 52px; text-align: center; color: #6f7064; font-family: 'EB Garamond', serif; font-style: italic; font-size: 18px; }
+
+    @media (max-width: 680px) {
+      th, td { padding: 10px 10px; }
+      .hide-sm { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="login">
+  <div class="login-card">
+    <h1>RSVP Admin</h1>
+    <p class="sub">Macleve &amp; Carolinegel</p>
+    <input type="password" id="pass-input" placeholder="Password" onkeydown="if(event.key==='Enter')tryLogin()">
+    <button onclick="tryLogin()">Enter</button>
+    <p id="login-err" class="login-err" style="display:none">Incorrect password</p>
+  </div>
+</div>
+
+<div id="app">
+  <header>
+    <div>
+      <h1>RSVP Dashboard</h1>
+      <div class="sub">Macleve &amp; Carolinegel &nbsp;·&nbsp; 07 Nov 2026</div>
+    </div>
+    <button class="refresh-btn" onclick="loadData()">↻ Refresh</button>
+  </header>
+  <main>
+    <div class="stats" id="stats"></div>
+    <div class="controls">
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="setFilter('all',this)">All</button>
+        <button class="filter-tab" onclick="setFilter('accepted',this)">Attending</button>
+        <button class="filter-tab" onclick="setFilter('declined',this)">Declined</button>
+      </div>
+      <input class="search-input" placeholder="Search by name…" oninput="setSearch(this.value)">
+      <select class="sort-select" onchange="setSort(this.value)">
+        <option value="date_desc">Newest first</option>
+        <option value="date_asc">Oldest first</option>
+        <option value="name">Name A–Z</option>
+        <option value="table">Table number</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th class="hide-sm">Phone</th>
+            <th>Response</th>
+            <th>+1</th>
+            <th>Kids</th>
+            <th>Table #</th>
+            <th class="hide-sm">Date</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://mhybivbgexjomepsuykt.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_Z-w1r2HmrkKhJeTIE-t5Fw_Ux_Yj2-P';
+  const ADMIN_PASS = 'mac2026'; // change this to something only you know
+
+  const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  let allData = [];
+  let activeFilter = 'all';
+  let searchTerm = '';
+  let sortMode = 'date_desc';
+
+  function tryLogin() {
+    if (document.getElementById('pass-input').value === ADMIN_PASS) {
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      loadData();
+    } else {
+      document.getElementById('login-err').style.display = 'block';
+    }
+  }
+
+  async function loadData() {
+    const { data, error } = await db.from('rsvps').select('*').order('created_at', { ascending: false });
+    if (error) { console.error(error); return; }
+    allData = data || [];
+    renderStats(allData);
+    renderTable();
+  }
+
+  function renderStats(data) {
+    const accepted = data.filter(r => r.response === 'accepted');
+    const totalAdults = accepted.length + accepted.filter(r => r.plus_one).length;
+    const totalKids = accepted.reduce((s, r) => s + (r.kids || 0), 0);
+    const tablesSet = new Set(data.filter(r => r.table_number != null).map(r => r.table_number));
+    const cards = [
+      { num: data.length,           label: 'Total RSVPs' },
+      { num: accepted.length,       label: 'Attending' },
+      { num: data.length - accepted.length, label: 'Declined' },
+      { num: totalAdults,           label: 'Total Adults' },
+      { num: totalKids,             label: 'Total Kids' },
+      { num: totalAdults + totalKids, label: 'Total Guests' },
+      { num: tablesSet.size,        label: 'Tables Assigned' },
+    ];
+    document.getElementById('stats').innerHTML = cards.map(c =>
+      `<div class="stat-card"><div class="num">${c.num}</div><div class="label">${c.label}</div></div>`
+    ).join('');
+  }
+
+  function setFilter(f, btn) {
+    activeFilter = f;
+    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTable();
+  }
+
+  function setSearch(v) { searchTerm = v.toLowerCase(); renderTable(); }
+  function setSort(v) { sortMode = v; renderTable(); }
+
+  function renderTable() {
+    let rows = [...allData];
+    if (activeFilter !== 'all') rows = rows.filter(r => r.response === activeFilter);
+    if (searchTerm) rows = rows.filter(r => (r.name || '').toLowerCase().includes(searchTerm));
+
+    if (sortMode === 'date_asc') rows.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    else if (sortMode === 'name') rows.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    else if (sortMode === 'table') rows.sort((a, b) => (a.table_number ?? 999) - (b.table_number ?? 999));
+
+    const tbody = document.getElementById('tbody');
+    if (!rows.length) {
+      tbody.innerHTML = `<tr><td colspan="8" class="no-data">No entries found</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = rows.map((r, i) => `
+      <tr>
+        <td class="muted">${i + 1}</td>
+        <td><strong>${esc(r.name)}</strong></td>
+        <td class="hide-sm">${r.phone ? esc(r.phone) : '<span class="muted">—</span>'}</td>
+        <td><span class="badge badge-${r.response}">${r.response === 'accepted' ? '✓ Attending' : '✗ Declined'}</span></td>
+        <td>${r.plus_one ? '✓' : '<span class="muted">—</span>'}</td>
+        <td>${r.kids || 0}</td>
+        <td>
+          <input class="table-input" id="ti-${r.id}" type="number" min="1" max="99"
+            value="${r.table_number != null ? r.table_number : ''}" placeholder="—"
+            onblur="saveTable('${r.id}', this)"
+            onkeydown="if(event.key==='Enter')this.blur()">
+        </td>
+        <td class="hide-sm muted">${fmt(r.created_at)}</td>
+      </tr>
+    `).join('');
+  }
+
+  async function saveTable(id, input) {
+    const val = input.value.trim();
+    const num = val === '' ? null : parseInt(val, 10);
+    const { error } = await db.from('rsvps').update({ table_number: num }).eq('id', id);
+    if (!error) {
+      input.classList.add('saved');
+      setTimeout(() => input.classList.remove('saved'), 1800);
+      const row = allData.find(r => r.id === id);
+      if (row) { row.table_number = num; renderStats(allData); }
+    }
+  }
+
+  function fmt(ts) {
+    return new Date(ts).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+  function esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+</script>
+</body>
+</html>
