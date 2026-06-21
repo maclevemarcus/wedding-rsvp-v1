@@ -61,6 +61,9 @@
 
     .muted { color: #bbb; font-style: italic; font-size: 12px; }
     .no-data { padding: 52px; text-align: center; color: #6f7064; font-family: 'EB Garamond', serif; font-style: italic; font-size: 18px; }
+    .del-btn { border: 1.5px solid #e8c8c8; background: transparent; color: #c0392b; border-radius: 8px; padding: 5px 10px; font-size: 13px; cursor: pointer; transition: all .18s; white-space: nowrap; }
+    .del-btn:hover { background: #fde8e8; }
+    .del-btn.confirm { background: #c0392b; color: #fff; border-color: #c0392b; }
 
     @media (max-width: 680px) {
       th, td { padding: 10px 10px; }
@@ -116,6 +119,7 @@
             <th>Kids</th>
             <th>Table #</th>
             <th class="hide-sm">Date</th>
+            <th></th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -211,6 +215,7 @@
             onkeydown="if(event.key==='Enter')this.blur()">
         </td>
         <td class="hide-sm muted">${fmt(r.created_at)}</td>
+        <td><button class="del-btn" id="del-${r.id}" onclick="deleteRecord('${r.id}', '${esc(r.name)}', this)">✕</button></td>
       </tr>
     `).join('');
   }
@@ -224,6 +229,27 @@
       setTimeout(() => input.classList.remove('saved'), 1800);
       const row = allData.find(r => r.id === id);
       if (row) { row.table_number = num; renderStats(allData); }
+    }
+  }
+
+  const deleteConfirm = {};
+  async function deleteRecord(id, name, btn) {
+    if (!deleteConfirm[id]) {
+      deleteConfirm[id] = true;
+      btn.textContent = 'Delete?';
+      btn.classList.add('confirm');
+      setTimeout(() => {
+        delete deleteConfirm[id];
+        if (btn) { btn.textContent = '✕'; btn.classList.remove('confirm'); }
+      }, 2500);
+      return;
+    }
+    delete deleteConfirm[id];
+    const { error } = await db.from('rsvps').delete().eq('id', id);
+    if (!error) {
+      allData = allData.filter(r => r.id !== id);
+      renderStats(allData);
+      renderTable();
     }
   }
 

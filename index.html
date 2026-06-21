@@ -34,6 +34,7 @@
   @keyframes fadeUp{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
   @keyframes petalDrift{0%{transform:translateY(12px) rotate(0);opacity:0}16%{opacity:.55}50%{transform:translateY(-30px) rotate(90deg);opacity:.55}84%{opacity:.4}100%{transform:translateY(12px) rotate(170deg);opacity:0}}
   @keyframes auroraBreathe{0%,100%{opacity:.38}50%{opacity:.82}}
+  @keyframes hintSlide{0%{opacity:0;transform:translateY(-6px)}100%{opacity:1;transform:translateY(0)}}
   ::-webkit-scrollbar{width:0;height:0;}
 </style>
 </helmet>
@@ -89,11 +90,16 @@
     </section>
 
     <!-- ============ SCENE 2 — OPEN THE LETTER ============ -->
-    <section data-scene="1" data-screen-label="02 Open Letter" style="position:relative;height:100dvh;min-height:100dvh;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 28px;overflow:hidden;">
+    <section data-scene="1" data-screen-label="02 Open Letter" style="position:relative;height:100dvh;min-height:100dvh;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 28px;overflow:hidden;background:linear-gradient(168deg,#f1e7d1,#e6d8bd);">
       <p style="position:absolute;top:9%;left:0;right:0;text-align:center;font-family:'Hanken Grotesk';font-weight:500;letter-spacing:.4em;text-transform:uppercase;font-size:10px;color:#3c4b35;opacity:.7;margin:0;z-index:3;">A letter for you</p>
 
       <!-- envelope + letter assembly -->
-      <div onClick="{{ openEnvelope }}" style="position:relative;width:300px;height:208px;cursor:pointer;perspective:1400px;margin-bottom:6px;">
+      <div onClick="{{ openEnvelope }}" style="position:relative;z-index:5;width:300px;height:208px;cursor:pointer;perspective:1400px;margin-bottom:6px;">
+
+        <!-- top-right orchid — behind envelope corner -->
+        <div style="position:absolute;top:-71px;right:-35px;width:150px;height:150px;background:url(orchids.png) no-repeat;background-size:375px 630px;background-position:-180px -96px;pointer-events:none;z-index:1;filter:drop-shadow(0 8px 12px rgba(40,52,34,.2));animation:fadeUp 1.2s ease .35s both;"></div>
+        <!-- left lily — in front of envelope, bigger, 10% offset top, 45% offset left -->
+        <div style="position:absolute;top:-39px;left:-90px;width:200px;height:390px;background:url(lily.png) no-repeat center/contain;pointer-events:none;z-index:10;filter:drop-shadow(0 12px 16px rgba(40,52,34,.24));animation:fadeUp 1.2s ease .45s both;"></div>
 
         <!-- the letter (rises out on open) -->
         <div style="position:absolute;left:50%;top:0;width:262px;height:344px;background:linear-gradient(175deg,#fbf7ee 0%,#f3ecdc 100%);border-radius:5px;box-shadow:0 30px 60px rgba(40,52,34,.34);padding:30px 24px;transition:transform 1.25s cubic-bezier(.19,1,.22,1),opacity .9s ease;transform:{{ letterTransform }};opacity:{{ letterOpacity }};z-index:{{ letterZ }};">
@@ -107,17 +113,17 @@
         </div>
 
         <!-- envelope back -->
-        <div style="position:absolute;left:0;bottom:0;width:300px;height:208px;background:linear-gradient(165deg,#e9dec7,#d7c6a6);border-radius:8px;box-shadow:0 28px 50px rgba(40,52,34,.3);z-index:2;"></div>
+        <div style="position:absolute;left:0;bottom:0;width:300px;height:208px;background:linear-gradient(165deg,#7b8767,#646f52);border-radius:8px;box-shadow:0 28px 50px rgba(30,40,22,.34);z-index:2;"></div>
         <!-- side flaps -->
-        <div style="position:absolute;left:0;bottom:0;width:300px;height:208px;z-index:5;clip-path:polygon(0 0,0 100%,52% 56%);background:linear-gradient(135deg,#e4d7bd,#d2c09f);"></div>
-        <div style="position:absolute;left:0;bottom:0;width:300px;height:208px;z-index:5;clip-path:polygon(100% 0,100% 100%,48% 56%);background:linear-gradient(225deg,#e4d7bd,#d2c09f);"></div>
+        <div style="position:absolute;left:0;bottom:0;width:300px;height:208px;z-index:5;clip-path:polygon(0 0,0 100%,52% 56%);background:linear-gradient(135deg,#828e6c,#6a7656);"></div>
+        <div style="position:absolute;left:0;bottom:0;width:300px;height:208px;z-index:5;clip-path:polygon(100% 0,100% 100%,48% 56%);background:linear-gradient(225deg,#828e6c,#6a7656);"></div>
         <!-- bottom pocket -->
-        <div style="position:absolute;left:0;bottom:0;width:300px;height:208px;z-index:6;clip-path:polygon(0 100%,100% 100%,50% 40%);background:linear-gradient(180deg,#ede2cb,#ddccac);box-shadow:0 -3px 8px rgba(60,50,20,.06);"></div>
+        <div style="position:absolute;left:0;bottom:0;width:300px;height:208px;z-index:6;clip-path:polygon(0 100%,100% 100%,50% 40%);background:linear-gradient(180deg,#7e8a69,#687458);box-shadow:0 -3px 8px rgba(30,40,22,.1);"></div>
 
         <!-- top flap (opens) -->
-        <div style="position:absolute;left:0;top:0;width:300px;height:128px;transform-origin:50% 0%;transform:{{ flapTransform }};transition:transform 1.2s cubic-bezier(.7,0,.2,1);z-index:8;clip-path:polygon(0 0,100% 0,50% 100%);background:linear-gradient(180deg,#f1e7d1,#e3d4b8);box-shadow:{{ flapShadow }};backface-visibility:hidden;">
+        <div style="position:absolute;left:0;top:0;width:300px;height:128px;transform-origin:50% 0%;transform:{{ flapTransform }};transition:transform 1.2s cubic-bezier(.7,0,.2,1);z-index:8;clip-path:polygon(0 0,100% 0,50% 100%);background:linear-gradient(180deg,#87936f,#707c5e);box-shadow:{{ flapShadow }};backface-visibility:hidden;">
           <!-- wax seal on flap tip -->
-          <div style="position:absolute;left:50%;bottom:8px;width:50px;height:50px;margin-left:-25px;border-radius:50%;background:radial-gradient(circle at 36% 30%,#e8d089,#c6a14e 52%,#9d7c33);display:flex;align-items:center;justify-content:center;font-family:'EB Garamond',serif;font-style:italic;color:#5c4413;font-size:17px;box-shadow:0 5px 12px rgba(90,70,20,.4),inset 0 1px 2px rgba(255,245,210,.6);transform:{{ sealScale }};transition:transform .8s ease;">M<span style="font-size:11px;opacity:.85;">&amp;</span>C</div>
+          <div style="position:absolute;left:50%;bottom:6px;width:54px;height:51px;margin-left:-27px;background:url(seal.png) no-repeat center/contain;filter:drop-shadow(0 5px 10px rgba(40,52,34,.4));transform:{{ sealScale }};transition:transform .8s ease;"></div>
         </div>
 
         <!-- gold dust on open -->
@@ -125,9 +131,10 @@
         <div style="position:absolute;left:50%;top:118px;width:5px;height:5px;margin-left:-3px;border-radius:50%;background:#e6cd85;z-index:9;animation:dust 1.3s ease-out forwards;animation-play-state:{{ dustPlay }};--dx:30px;--dy:-58px;"></div>
         <div style="position:absolute;left:50%;top:118px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:#c6a14e;z-index:9;animation:dust 1s ease-out forwards;animation-play-state:{{ dustPlay }};--dx:8px;--dy:-66px;"></div>
         <div style="position:absolute;left:50%;top:118px;width:5px;height:5px;margin-left:-3px;border-radius:50%;background:#d9bd76;z-index:9;animation:dust 1.2s ease-out forwards;animation-play-state:{{ dustPlay }};--dx:-14px;--dy:-60px;"></div>
+
       </div>
 
-      <p style="font-family:'Hanken Grotesk';font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#3c4b35;margin:14px 0 0;animation:breathe 2.6s ease-in-out infinite;opacity:{{ hintOpacity }};transition:opacity .6s ease;">Tap to break the seal</p>
+      <p style="position:relative;z-index:30;font-family:'Hanken Grotesk';font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#3c4b35;margin:34px 0 0;animation:breathe 2.6s ease-in-out infinite;opacity:{{ hintOpacity }};transition:opacity .6s ease;">Tap to break the seal</p>
     </section>
 
     <!-- ============ SCENE 3 — COUPLE REVEAL ============ -->
@@ -268,6 +275,9 @@
       <sc-if value="{{ rsvpAccepted }}" hint-placeholder-val="{{ false }}">
         <div style="position:absolute;left:50%;top:50%;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(220,192,114,.9),rgba(220,192,114,0) 65%);transform:translate(-50%,-50%) scale(.2);animation:bloom 2.2s ease-out forwards;pointer-events:none;z-index:1;"></div>
       </sc-if>
+      <sc-if value="{{ rsvpDuplicate }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;left:50%;top:50%;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(180,210,180,.85),rgba(180,210,180,0) 65%);transform:translate(-50%,-50%) scale(.2);animation:bloom 2.2s ease-out forwards;pointer-events:none;z-index:1;"></div>
+      </sc-if>
 
       <!-- the RSVP paper card -->
       <div style="position:relative;z-index:2;width:288px;min-height:340px;background:linear-gradient(175deg,#fbf7ee,#f1ead9);border-radius:6px;box-shadow:0 30px 56px rgba(40,52,34,.32);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 30px;text-align:center;">
@@ -284,7 +294,13 @@
           <div style="display:flex;flex-direction:column;align-items:center;width:100%;animation:inkIn 1s ease both;">
             <p style="font-family:'EB Garamond',serif;font-size:23px;line-height:1.4;color:#33402d;margin:0 0 20px;">Kindly let us<br>know your heart</p>
             <input onchange="{{ onNameInput }}" value="{{ name }}" placeholder="Your name" style="width:100%;border:1.5px solid #c6a14e;border-radius:40px;padding:14px 20px;background:rgba(255,255,255,.45);font-family:'EB Garamond',serif;font-style:italic;font-size:16px;color:#33402d;outline:none;text-align:center;margin-bottom:10px;box-sizing:border-box;" />
-            <input onchange="{{ onPhoneInput }}" value="{{ phone }}" placeholder="Contact number (optional)" style="width:100%;border:1.5px solid #d6c8a6;border-radius:40px;padding:13px 20px;background:rgba(255,255,255,.35);font-family:'EB Garamond',serif;font-style:italic;font-size:15px;color:#33402d;outline:none;text-align:center;margin-bottom:16px;box-sizing:border-box;" />
+            <input onchange="{{ onPhoneInput }}" value="{{ phone }}" placeholder="Contact number" inputmode="numeric" style="width:100%;border:1.5px solid {{ phoneBorder }};border-radius:40px;padding:13px 20px;background:rgba(255,255,255,.35);font-family:'EB Garamond',serif;font-style:italic;font-size:15px;color:#33402d;outline:none;text-align:center;margin-bottom:6px;box-sizing:border-box;transition:border-color .3s;" />
+            <sc-if value="{{ phoneHint }}" hint-placeholder-val="{{ false }}">
+              <p style="font-family:'EB Garamond',serif;font-style:italic;font-size:13px;color:#b08d3e;text-align:center;margin:0 0 12px;animation:hintSlide .35s ease both;">Please add your number so we know it's you</p>
+            </sc-if>
+            <sc-if value="{{ !phoneHint }}" hint-placeholder-val="{{ true }}">
+              <div style="height:18px;margin-bottom:0;"></div>
+            </sc-if>
             <p style="font-family:'Hanken Grotesk';font-size:9px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:#b08d3e;margin:0 0 9px;">Bringing a +1?</p>
             <div style="display:flex;gap:8px;width:100%;margin-bottom:16px;">
               <button onClick="{{ setPlusOne }}" style="{{ plusOneYesStyle }}">Yes, +1</button>
@@ -314,6 +330,15 @@
           <div style="display:flex;flex-direction:column;align-items:center;animation:inkIn 1.4s ease both;">
             <p style="font-family:'EB Garamond',serif;font-style:italic;font-size:24px;line-height:1.45;color:#33402d;margin:0 0 10px;">You will be<br>missed dearly</p>
             <p style="font-family:'Pinyon Script',cursive;font-size:26px;color:#b08d3e;margin:0;">with love, always</p>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ rsvpDuplicate }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;align-items:center;animation:inkIn 1.2s ease both;">
+            <div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 36% 30%,#b8ddb8,#7aad7a 52%,#4e8a4e);display:flex;align-items:center;justify-content:center;color:#fffdf6;font-size:24px;box-shadow:0 6px 14px rgba(50,100,50,.28);">✓</div>
+            <p style="font-family:'EB Garamond',serif;font-size:23px;line-height:1.4;color:#33402d;margin:22px 0 6px;">You're already<br>on our list</p>
+            <p style="font-family:'Pinyon Script',cursive;font-size:26px;color:#b08d3e;margin:0 0 16px;">we have your RSVP</p>
+            <p style="font-family:'Hanken Grotesk';font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#5b5c50;margin:0;">{{ duplicateMsg }}</p>
           </div>
         </sc-if>
 
@@ -389,7 +414,7 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:430,&quot;height&quot;:900}}">
 class Component extends DCLogic {
-  state = { opened:false, rsvp:'sealed', active:0, name:'', phone:'', plusOne:false, kids:0, submitting:false };
+  state = { opened:false, rsvp:'sealed', active:0, name:'', phone:'', plusOne:false, kids:0, submitting:false, phoneHint:false, existingResponse:'' };
 
   componentDidMount(){
     this._db = window.supabase.createClient(
@@ -471,7 +496,7 @@ class Component extends DCLogic {
       flapShadow: opened ? '0 -12px 26px rgba(40,52,34,.18)' : '0 8px 16px rgba(40,52,34,.18)',
       letterTransform: opened ? 'translate(-50%,-48%) scale(1.02)' : 'translate(-50%,-12%) scale(.96)',
       letterOpacity: opened ? 1 : 0,
-      letterZ: opened ? 9 : 1,
+      letterZ: opened ? 20 : 1,
       sealScale: opened ? 'scale(.86)' : 'scale(1)',
       dustPlay: opened ? 'running' : 'paused',
       hintOpacity: opened ? 0 : 1,
@@ -482,8 +507,12 @@ class Component extends DCLogic {
       name: this.state.name,
       phone: this.state.phone,
       kids: this.state.kids,
+      phoneHint: this.state.phoneHint,
+      phoneBorder: this.state.phoneHint ? '#c6a14e' : '#d6c8a6',
+      rsvpDuplicate: this.state.rsvp === 'duplicate',
+      duplicateMsg: this.state.existingResponse === 'accepted' ? 'Attending · 07 Nov 2026' : this.state.existingResponse === 'declined' ? 'Regretfully declined' : '',
       onNameInput: (e) => this.setState({ name: e.target.value }),
-      onPhoneInput: (e) => this.setState({ phone: e.target.value }),
+      onPhoneInput: (e) => this.setState({ phone: e.target.value.replace(/\D/g,''), phoneHint: false }),
       setPlusOne: () => this.setState({ plusOne:true }),
       clearPlusOne: () => this.setState({ plusOne:false }),
       incKids: () => this.setState({ kids: Math.min(10, this.state.kids + 1) }),
@@ -497,14 +526,22 @@ class Component extends DCLogic {
       openRsvp: () => this.setState({ rsvp:'open' }),
       accept: async () => {
         if(this.state.submitting) return;
+        const phone = this.state.phone.trim();
+        if(!phone){ this.setState({ phoneHint:true }); return; }
         this.setState({ submitting:true });
-        await this._db.from('rsvps').insert({ name: this.state.name.trim() || 'Guest', phone: this.state.phone.trim() || null, response:'accepted', plus_one: this.state.plusOne, kids: this.state.kids });
+        const { data:dup } = await this._db.from('rsvps').select('id,response').eq('phone', phone).maybeSingle();
+        if(dup){ this.setState({ rsvp:'duplicate', existingResponse:dup.response, submitting:false }); return; }
+        await this._db.from('rsvps').insert({ name: this.state.name.trim() || 'Guest', phone, response:'accepted', plus_one: this.state.plusOne, kids: this.state.kids });
         this.setState({ rsvp:'accepted', submitting:false });
       },
       decline: async () => {
         if(this.state.submitting) return;
+        const phone = this.state.phone.trim();
+        if(!phone){ this.setState({ phoneHint:true }); return; }
         this.setState({ submitting:true });
-        await this._db.from('rsvps').insert({ name: this.state.name.trim() || 'Guest', phone: this.state.phone.trim() || null, response:'declined', plus_one: this.state.plusOne, kids: this.state.kids });
+        const { data:dup } = await this._db.from('rsvps').select('id,response').eq('phone', phone).maybeSingle();
+        if(dup){ this.setState({ rsvp:'duplicate', existingResponse:dup.response, submitting:false }); return; }
+        await this._db.from('rsvps').insert({ name: this.state.name.trim() || 'Guest', phone, response:'declined', plus_one: this.state.plusOne, kids: this.state.kids });
         this.setState({ rsvp:'declined', submitting:false });
       }
     };
