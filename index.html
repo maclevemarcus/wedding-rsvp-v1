@@ -44,6 +44,7 @@
   @keyframes ringPulse{0%{transform:translate(-50%,-50%) scale(.55);opacity:.55}70%{opacity:0}100%{transform:translate(-50%,-50%) scale(2.1);opacity:0}}
   @keyframes sealShadow{0%,100%{transform:translateX(-50%) scale(1);opacity:.5}50%{transform:translateX(-50%) scale(.9);opacity:.34}}
   ::-webkit-scrollbar{width:0;height:0;}
+  section[data-scene]{content-visibility:auto;contain-intrinsic-size:100vw 100dvh;}
 </style>
 </helmet>
 
@@ -73,7 +74,7 @@
       <span style="position:absolute;top:32%;left:88%;width:7px;height:9px;background:linear-gradient(135deg,#c6d1ad,#a3b083);border-radius:2px 2px 2px 6px;box-shadow:0 4px 10px rgba(20,30,16,.22);animation:petalDrift 20s ease-in-out 5s infinite;z-index:1;opacity:0;"></span>
 
       <!-- pulsing glow behind card -->
-      <div style="position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);width:520px;height:520px;background:radial-gradient(circle,rgba(198,216,160,.6) 0%,rgba(170,196,130,.28) 40%,rgba(170,196,130,0) 66%);animation:auroraBreathe 6s ease-in-out infinite;z-index:1;pointer-events:none;mix-blend-mode:screen;"></div>
+      <div style="position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);width:520px;height:520px;background:radial-gradient(circle,rgba(198,216,160,.6) 0%,rgba(170,196,130,.28) 40%,rgba(170,196,130,0) 66%);animation:auroraBreathe 6s ease-in-out infinite;z-index:1;pointer-events:none;"></div>
       <!-- twinkling specks -->
       <span style="position:absolute;top:28%;left:18%;width:3px;height:3px;border-radius:50%;background:#eae4c8;box-shadow:0 0 6px 1px rgba(234,228,200,.85);animation:breathe 3.4s ease-in-out infinite;z-index:2;"></span>
       <span style="position:absolute;top:40%;left:84%;width:2px;height:2px;border-radius:50%;background:#eae4c8;box-shadow:0 0 5px 1px rgba(234,228,200,.8);animation:breathe 4.2s ease-in-out infinite .6s;z-index:2;"></span>
@@ -97,9 +98,9 @@
     <!-- ============ SCENE 2 — OPEN THE LETTER ============ -->
     <section data-scene="1" data-screen-label="02 Open Letter" style="position:relative;height:100dvh;min-height:100dvh;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 28px;overflow:hidden;background:linear-gradient(168deg,#f1e7d1,#e6d8bd);">
       <!-- warm breathing light -->
-      <div style="position:absolute;top:-14%;left:50%;transform:translateX(-50%);width:600px;height:480px;background:radial-gradient(circle,rgba(255,250,228,.95) 0%,rgba(255,243,205,.5) 38%,rgba(255,243,205,0) 68%);animation:auroraBreathe 7s ease-in-out infinite;z-index:0;pointer-events:none;mix-blend-mode:screen;"></div>
+      <div style="position:absolute;top:-14%;left:50%;transform:translateX(-50%);width:600px;height:480px;background:radial-gradient(circle,rgba(255,250,228,.95) 0%,rgba(255,243,205,.5) 38%,rgba(255,243,205,0) 68%);animation:auroraBreathe 7s ease-in-out infinite;z-index:0;pointer-events:none;"></div>
       <!-- lower gold glow -->
-      <div style="position:absolute;bottom:-12%;left:50%;margin-left:-210px;width:420px;height:420px;background:radial-gradient(circle,rgba(214,183,102,.5) 0%,rgba(214,183,102,0) 62%);animation:auroraBreathe 9s ease-in-out infinite 1.4s;z-index:0;pointer-events:none;mix-blend-mode:multiply;"></div>
+      <div style="position:absolute;bottom:-12%;left:50%;margin-left:-210px;width:420px;height:420px;background:radial-gradient(circle,rgba(214,183,102,.5) 0%,rgba(214,183,102,0) 62%);animation:auroraBreathe 9s ease-in-out infinite 1.4s;z-index:0;pointer-events:none;"></div>
       <!-- drifting petals -->
       <span style="position:absolute;top:22%;left:14%;width:11px;height:14px;background:linear-gradient(135deg,#fdfbf4,#ece0c6);border-radius:2px 2px 2px 6px;box-shadow:0 4px 10px rgba(90,80,50,.14);animation:petalDrift 14s ease-in-out 0s infinite;z-index:1;opacity:0;"></span>
       <span style="position:absolute;top:64%;left:80%;width:9px;height:12px;background:linear-gradient(135deg,#fdfbf4,#ece0c6);border-radius:2px 2px 2px 6px;box-shadow:0 4px 10px rgba(90,80,50,.14);animation:petalDrift 17s ease-in-out 3s infinite;z-index:1;opacity:0;"></span>
@@ -117,12 +118,12 @@
         <div style="position:absolute;left:50%;top:96px;margin-left:-2px;width:58px;height:58px;border-radius:50%;border:2px solid rgba(198,161,78,.7);z-index:9;pointer-events:none;opacity:{{ hintOpacity }};transition:opacity .5s ease;animation:ringPulse 2.4s ease-out infinite;"></div>
 
         <!-- top-right orchid — behind envelope corner -->
-        <div style="position:absolute;top:-71px;right:-35px;width:150px;height:150px;pointer-events:none;z-index:1;animation:fadeUp 1.2s ease .35s both;">
-          <div style="width:100%;height:100%;background:url(orchids.png) no-repeat;background-size:375px 630px;background-position:-180px -96px;filter:drop-shadow(0 8px 12px rgba(40,52,34,.2));transform-origin:88% 8%;animation:swayR 7s ease-in-out 1.2s infinite;"></div>
+        <div style="position:absolute;top:-71px;right:-35px;width:150px;height:150px;pointer-events:none;z-index:1;filter:drop-shadow(0 8px 12px rgba(40,52,34,.2));animation:fadeUp 1.2s ease .35s both;">
+          <div style="width:100%;height:100%;background:url(orchids.png) no-repeat;background-size:375px 630px;background-position:-180px -96px;transform-origin:88% 8%;animation:swayR 7s ease-in-out 1.2s infinite;"></div>
         </div>
         <!-- left lily — in front of envelope, bigger, 10% offset top, 45% offset left -->
-        <div style="position:absolute;top:-39px;left:-90px;width:200px;height:390px;pointer-events:none;z-index:10;animation:fadeUp 1.2s ease .45s both;">
-          <div style="width:100%;height:100%;background:url(lily.png) no-repeat center/contain;filter:drop-shadow(0 12px 16px rgba(40,52,34,.24));transform-origin:50% 14%;animation:sway 6s ease-in-out 1.4s infinite;"></div>
+        <div style="position:absolute;top:-39px;left:-90px;width:200px;height:390px;pointer-events:none;z-index:10;filter:drop-shadow(0 12px 16px rgba(40,52,34,.24));animation:fadeUp 1.2s ease .45s both;">
+          <div style="width:100%;height:100%;background:url(lily.png) no-repeat center/contain;transform-origin:50% 14%;animation:sway 6s ease-in-out 1.4s infinite;"></div>
         </div>
 
         <!-- the letter (rises out on open) -->
